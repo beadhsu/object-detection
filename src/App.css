@@ -1,0 +1,25 @@
+.app {
+  text-align: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.canvas {
+  max-width: 100%;
+  margin: 20px 0;
+  border: 1px solid #ccc;
+}
+
+.json-display {
+  max-width: 800px;
+  margin: 20px auto;
+  text-align: left;
+}
+
+.json-display pre {
+  background: #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+  color: #000;
+}
