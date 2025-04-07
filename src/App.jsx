@@ -9,8 +9,17 @@ function App() {
 
   window.onOpenCvReady = () => {
     console.log("OpenCV.js is ready");
-    setIsCvLoaded(true);
+    // setIsCvLoaded(true);
   };
+
+  // 輪詢檢查cv是否可用
+  const checkCvLoaded = setInterval(() => {
+    if (window.cv && window.cv.Mat) {
+      console.log("OpenCV.js detected via polling");
+      setIsCvLoaded(true);
+      clearInterval(checkCvLoaded);
+    }
+  }, 500);
 
   const handleImageUpload = (e) => {
     if (!isCvLoaded) {
