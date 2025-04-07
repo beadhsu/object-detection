@@ -36,6 +36,9 @@ function App() {
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
 
+      const imageWidth = img.width;
+      const imageHeight = img.height;
+      
       // opencv.js
       const src = cv.imread(canvas);
       let mask = new cv.Mat();
@@ -83,6 +86,21 @@ function App() {
       // 按 center_x 排序
       objectsInfo.sort((a, b) => a.center_x - b.center_x);
 
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      objectsInfo.forEach(obj => {
+        minX = Math.min(minX, obj.x);
+        minY = Math.min(minY, obj.y);
+        maxX = Math.max(maxX, obj.x + obj.width);
+        maxY = Math.max(maxY, obj.y + obj.height);
+      });
+      // 計算距離
+      const distances = {
+        left: minX,
+        top: minY,
+        right: imageWidth - maxX,
+        bottom: imageHeight - maxY,
+      };
+
       
       const finalObjectsInfo = [];
       objectsInfo.forEach((obj, index) => {
@@ -119,7 +137,11 @@ function App() {
         });
       });
 
-      setDetectionData({ objects: finalObjectsInfo });
+      setDetectionData({
+        image_size: { width: imageWidth, height: imageHeight },
+        distances: objectsInfo.length > 0 ? distances : { left: 0, top: 0, right: 0, bottom: 0 },
+        objects: finalObjectsInfo,
+      });
 
       // 清理記憶體 Opencv API
       src.delete();
@@ -135,6 +157,7 @@ function App() {
       <h1>物件檢測工具</h1>
       <input type="file" accept="image/*" onChange={handleImageUpload} />
       {!isCvLoaded && <p>載入OpenCV.js中..</p>}
+      {isCvLoaded && <p>OpenCV.js載入完成</p>}
       <canvas ref={canvasRef} className="canvas" />
       {detectionData && (
         <div className="json-display">
