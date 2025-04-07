@@ -1,12 +1,75 @@
-# React + Vite
+# Object Detection Tool
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+基於Vite和React的純前端物件檢測工具，使用`opencv.js`從圖片中檢測物體，繪製邊框並生成JSON結果。
 
-Currently, two official plugins are available:
+## Run
+https://beadhsu.github.io/object-detection/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech stacks
+- **框架**: React
+- **工具**: Vite
+- **圖片處理**: [OpenCV.js](https://docs.opencv.org/4.x/d5/d10/tutorial_js_root.html)
+- **部署**: GitHub Pages
 
-## Expanding the ESLint configuration
+## 安裝與設置
+ ```bash
+ git clone https://github.com/beadhsu/object-detection.git
+ cd object-detection
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+ npm install
+ npm run dev
+ ```
+
+## 部署到 GitHub Pages
+### 配置
+1. **確認 `vite.config.js`**：
+   ```javascript
+   import { defineConfig } from 'vite';
+   import react from '@vitejs/plugin-react';
+
+   export default defineConfig({
+     plugins: [react()],
+     base: '/object-detection/' // 與儲存庫名稱一致
+   });
+   ```
+
+2. **`package.json`**：
+   ```json
+   {
+     "scripts": {
+       "dev": "vite",
+       "build": "vite build",
+       "preview": "vite preview",
+       "predeploy": "npm run build",
+       "deploy": "gh-pages -d dist"
+     },
+     "devDependencies": {
+       "gh-pages": "^6.2.0"
+     },
+     "homepage": "https://beadhsu.github.io/object-detection"
+   }
+   ```
+
+3. **安裝 `gh-pages`**：
+   ```bash
+   npm install --save-dev gh-pages
+   ```
+
+### 部署
+1. **Init Git & Push**：
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin https://github.com/beadhsu/object-detection.git
+   git branch -M main
+   git push -u origin main
+   ```
+
+2. Deploy
+   ```bash
+   npm run deploy
+   ```
+   - 自動執行 `npm run build` 生成 `dist`。
+   - 將 `dist` 推送至 `gh-pages` 分支。
+   - URL: `https://beadhsu.github.io/object-detection/`。
