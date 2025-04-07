@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import './App.css';
+import React, { useState, useRef } from "react";
+import "./App.css";
 
 function App() {
   const [imageSrc, setImageSrc] = useState(null);
@@ -8,13 +8,13 @@ function App() {
   const canvasRef = useRef(null);
 
   window.onOpenCvReady = () => {
-    console.log('OpenCV.js is ready');
+    console.log("OpenCV.js is ready");
     setIsCvLoaded(true);
   };
 
   const handleImageUpload = (e) => {
     if (!isCvLoaded) {
-      alert('OpenCV.js還沒載入');
+      alert("OpenCV.js還沒載入");
       return;
     }
     const file = e.target.files[0];
@@ -31,14 +31,14 @@ function App() {
 
     img.onload = () => {
       const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       canvas.width = img.width;
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
 
       const imageWidth = img.width;
       const imageHeight = img.height;
-      
+
       // opencv.js
       const src = cv.imread(canvas);
       let mask = new cv.Mat();
@@ -62,7 +62,13 @@ function App() {
       }
 
       // 尋找edge, 只檢測最外層輪廓 忽略內部輪廓, 只保留關鍵點(矩形四個角)
-      cv.findContours(mask, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+      cv.findContours(
+        mask,
+        contours,
+        hierarchy,
+        cv.RETR_EXTERNAL,
+        cv.CHAIN_APPROX_SIMPLE
+      );
 
       // 處理每個edge
       let objectsInfo = [];
@@ -76,7 +82,10 @@ function App() {
           const centerY = y + Math.floor(height / 2);
 
           objectsInfo.push({
-            x, y, width, height,
+            x,
+            y,
+            width,
+            height,
             center_x: centerX,
             center_y: centerY,
           });
@@ -86,8 +95,11 @@ function App() {
       // 按 center_x 排序
       objectsInfo.sort((a, b) => a.center_x - b.center_x);
 
-      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-      objectsInfo.forEach(obj => {
+      let minX = Infinity,
+        minY = Infinity,
+        maxX = -Infinity,
+        maxY = -Infinity;
+      objectsInfo.forEach((obj) => {
         minX = Math.min(minX, obj.x);
         minY = Math.min(minY, obj.y);
         maxX = Math.max(maxX, obj.x + obj.width);
@@ -101,25 +113,24 @@ function App() {
         bottom: imageHeight - maxY,
       };
 
-      
       const finalObjectsInfo = [];
       objectsInfo.forEach((obj, index) => {
         const number = index + 1;
 
         // 邊框
-        ctx.strokeStyle = 'green';
+        ctx.strokeStyle = "green";
         ctx.lineWidth = 1;
         ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
 
         // 中心點
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = "red";
         ctx.beginPath();
         ctx.arc(obj.center_x, obj.center_y, 5, 0, 2 * Math.PI);
         ctx.fill();
 
         // 編號
-        ctx.fillStyle = 'green';
-        ctx.font = '16px Arial';
+        ctx.fillStyle = "green";
+        ctx.font = "16px Arial";
         const textY = obj.y - 10 < 0 ? obj.y + 20 : obj.y - 10; // 若超出頂部，移到物體內部
         ctx.fillText(`Obj ${number}`, obj.x, textY);
 
@@ -139,7 +150,10 @@ function App() {
 
       setDetectionData({
         image_size: { width: imageWidth, height: imageHeight },
-        distances: objectsInfo.length > 0 ? distances : { left: 0, top: 0, right: 0, bottom: 0 },
+        distances:
+          objectsInfo.length > 0
+            ? distances
+            : { left: 0, top: 0, right: 0, bottom: 0 },
         objects: finalObjectsInfo,
       });
 
