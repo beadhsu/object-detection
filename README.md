@@ -1,7 +1,6 @@
 # Object Detection Tool
 
-<img width="941" alt="截圖 2025-04-07 晚上11 24 32" src="https://github.com/user-attachments/assets/22a9242f-ed22-4a0c-80f0-5c9211e466ac" />
-
+<img width="1030" alt="截圖 2025-04-07 晚上11 55 47" src="https://github.com/user-attachments/assets/5648baa2-afff-4d38-83e6-43558e5fda08" />
 
 基於Vite和React的純前端物件檢測工具，使用`opencv.js`從圖片中檢測物體，繪製邊框並生成JSON結果。
 
